@@ -1,38 +1,67 @@
 import React, { useState } from 'react';  
-import { View, TextInput, Button, Text, Alert } from 'react-native';  
+import { StyleSheet, Text, TextInput, View, Button, Alert } from 'react-native';  
+import { useSaboresContext } from '../context/SaboresContext';  // Importa el contexto  
 
-const Login = () => {  
+const Login = ({ navigation }) => {  
+  const { usuarios } = useSaboresContext(); // Obtiene el contexto de usuarios  
   const [username, setUsername] = useState('');  
   const [password, setPassword] = useState('');  
 
   const handleLogin = () => {  
-  if (username === 'admin' && password === 'admin123') {  
-      Alert.alert('Login exitoso', 'Eres un administrador');  
-    } else if (username === 'user' && password === 'user123') {  
-      Alert.alert('Login exitoso', 'Eres un usuario');  
+    const user = usuarios.find(u => u.correo_electronico === username);  
+
+    if (user && user.contraseña === password) {  
+      Alert.alert('Login Successful', `Welcome ${username}!`);  
+      if (user.id_rol === 2) {  // Asumiendo que 2 es el rol de Administrador  
+        navigation.navigate('AdminScreen');  
+      } else {  
+        navigation.navigate('UserScreen');  
+      }  
     } else {  
-      Alert.alert('Login fallido', 'Usuario o contraseña incorrectos');  
+      Alert.alert('Login Failed', 'Invalid username or password');  
     }  
   };  
 
   return (  
-    <View style={{ padding: 20 }}>  
+    <View style={styles.container}>  
+      <Text style={styles.title}>Login</Text>  
       <TextInput  
-        placeholder="Usuario"  
+        style={styles.input}  
+        placeholder="Username"  
         value={username}  
         onChangeText={setUsername}  
-        style={{ marginBottom: 10, borderWidth: 1, padding: 10 }}  
       />  
       <TextInput  
-        placeholder="Contraseña"  
+        style={styles.input}  
+        placeholder="Password"  
         value={password}  
         onChangeText={setPassword}  
         secureTextEntry  
-        style={{ marginBottom: 10, borderWidth: 1, padding: 10 }}  
       />  
-      <Button title="Iniciar sesión" onPress={handleLogin} />  
+      <Button title="Login" onPress={handleLogin} />  
     </View>  
   );  
 };  
+
+const styles = StyleSheet.create({  
+  container: {  
+    flex: 1,  
+    alignItems: 'center',  
+    justifyContent: 'center',  
+    padding: 16,  
+  },  
+  title: {  
+    fontSize: 24,  
+    marginBottom: 20,  
+  },  
+  input: {  
+    width: '100%',  
+    padding: 10,  
+    marginBottom: 12,  
+    borderWidth: 1,  
+    borderColor: 'gray',  
+    borderRadius: 5,  
+  },  
+});  
 
 export default Login;  
