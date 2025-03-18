@@ -15,6 +15,8 @@ create database SaboresCerca;
 CREATE TABLE Roles (  
     id INT AUTO_INCREMENT PRIMARY KEY,  
     nombre VARCHAR(50) NOT NULL  
+    password VARCHAR(255),
+    rol ENUM('admin', 'usuario')
 );  
 
 CREATE TABLE Usuarios (  
@@ -45,7 +47,7 @@ CREATE TABLE Menus (
     descripcion TEXT,  
     FOREIGN KEY (id_negocio) REFERENCES Negocios(id_negocio)  
 );  
-
+DROP TABLE IF EXISTS Comentarios;
 CREATE TABLE Comentarios (  
     id_comentario INT AUTO_INCREMENT PRIMARY KEY,  
     id_usuario INT,  
@@ -77,7 +79,7 @@ INSERT INTO Roles (nombre) VALUES
 ('Usuario'),   
 ('Administrador'); 
 
-INSERT INTO Usuarios (nombre, email, telefono, direccion, id_rol) VALUES  
+INSERT INTO Usuario (nombre, email, telefono, direccion, id_rol) VALUES  
 ('Admin', 'administrador.admin@example.com', '9999-1111', 'Calle de la Esquina 1', 2);  -- id_rol = 2 para Administrador  
 
 /*1. Insertar datos en la tabla Usuarios*/
@@ -127,10 +129,3 @@ INSERT INTO PuntosFidelidad (id_usuario, puntos_acumulados) VALUES
 (3, 25),  
 (4, 35),  
 (5, 15);  
-
-SELECT * FROM Usuarios;
-SELECT * FROM Negocios;
-SELECT * FROM Menus;
-SELECT * FROM Comentarios;
-SELECT * FROM Promociones;
-SELECT * FROM PuntosFidelidad;

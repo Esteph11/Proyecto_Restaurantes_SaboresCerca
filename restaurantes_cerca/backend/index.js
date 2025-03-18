@@ -1,14 +1,14 @@
 const express = require('express');  
-const cors = require('cors');
 const bodyParser = require('body-parser');  
-const sequelize = require('./Connection/Connection');  
-const Roles = require('./Models/Roles');  
-const Usuarios = require('./Models/Usuarios');  
-const Negocios = require('./Models/Negocios');  
-const Menus = require('./Models/Menus');  
-const Comentarios = require('./Models/Comentarios');  
-const Promociones = require('./Models/Promociones');  
-const PuntosFidelidad = require('./Models/PuntosFidelidad');  
+const cors= require('cors')
+  
+const Roles = require('./models/Roles');  
+const Usuarios = require('./models/Usuarios');  
+const Negocios = require('./models/Negocios');  
+const Menus = require('./models/Menus');  
+const Comentarios = require('./models/Comentarios');  
+const Promociones = require('./models/Promociones');  
+const PuntosFidelidad = require('./models/PuntosFidelidad');  
 
 const app = express();  
 const PORT = 3000;  
@@ -18,6 +18,39 @@ app.use(cors());
 
 // Middleware  
 app.use(bodyParser.json());  
+
+//RUTAS USUARIOS, aunque no los gestionamos en frontend, es necesario crearlos?
+
+app.get('/usuarios', async (req, res) => {
+    try {
+        const usuarios = await Usuario.findAll();
+        res.status(200).json(usuarios);
+    } catch (error) {
+        res.status(500).json({ 'mensaje': 'Ocurrió un error' });
+    }
+});
+
+// Ruta para crear un nuevo usuario
+app.post('/usuarios', async (req, res) => {
+    try {
+        const { nombre, email, password, rol } = req.body;
+
+        // Hashear la contraseña antes de guardarla
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const nuevoUsuario = await Usuario.create({
+            nombre,
+            email,
+            password: hashedPassword,
+            rol
+        });
+
+        res.status(201).json(nuevoUsuario);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ mensaje: 'Error al crear usuario' });
+    }
+}); 
 
 // CRUD para Roles  
 app.post('/roles', async (req, res) => {  

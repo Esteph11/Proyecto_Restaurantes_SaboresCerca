@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');  
 const sequelize = require('../Connection/Connection');  
-const Usuarios = require('./Usuarios'); 
-const Negocios = require('./Negocios');  
+const Usuarios = require('./Usuarios'); // Importar el modelo Usuarios  
+const Negocios = require('./Negocios'); // Importar el modelo Negocios  
 
 const Comentarios = sequelize.define('Comentarios', {  
     id_comentario: {  
