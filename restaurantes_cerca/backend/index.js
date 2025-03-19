@@ -19,6 +19,32 @@ app.use(cors());
 // Middleware  
 app.use(bodyParser.json());  
 
+//Login
+
+app.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Buscar usuario en la base de datos por el correo
+        const usuario = await Usuario.findOne({ where: { email } });
+
+        if (!usuario || usuario.password !== password) {
+            return res.status(400).json({ mensaje: 'Credenciales incorrectas' });
+        }
+
+        // devuelve el usuario (sin la contraseña por seguridad)
+        res.status(200).json({
+            id_usuario: usuario.id_usuario,
+            nombre: usuario.nombre,
+            email: usuario.email,
+            rol: usuario.rol
+        });
+
+    } catch (error) {
+        res.status(500).json({ mensaje: 'Ocurrió un error en el servidor' });
+    }
+});
+
 //RUTAS USUARIOS, aunque no los gestionamos en frontend, es necesario crearlos?
 
 app.get('/usuarios', async (req, res) => {

@@ -1,6 +1,8 @@
 import { View, Text, Alert } from 'react-native';  
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';  
 import { SaboresContext } from '../Context/SaboresContex';  
+import { Rol } from '../Modelos/Rol'
+import { useNavigation } from '@react-navigation/native'
 
 interface ViewRect {  
     children: ReactNode;  
@@ -129,4 +131,117 @@ export const useSaboresContext = () => {
     return useContext(SaboresContext); // Asegúrate de devolver el contexto correcto  
 };  
 
-export default SaboresProvider;  
+export default SaboresProvider;
+
+
+/*
+
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { Alert } from 'react-native';
+import { Sabores } from '../Models/Sabores';
+
+interface SaboresContextType {
+  sabores: Sabores[];
+  agregarSabores: (descripcion: string) => void;
+  getSabores: () => Promise<void>;
+  deleteSabores: (id: number) => Promise<void>;
+  setEditingSabores: (sabores: Sabores) => void;
+  texto: string;
+  setTexto: (texto: string) => void;
+}
+
+const SaboresContext = createContext<SaboresContextType>({} as SaboresContextType);
+
+interface Props {
+  children: ReactNode;
+}
+
+export const SaboresProvider = ({ children }: Props) => {
+  const [sabores, setSabores] = useState<Sabores[]>([]);
+  const [texto, setTexto] = useState('');
+  const [saboresEditar, setSaboresEditar] = useState<Sabores>({ id: 0, descripcion: '' });
+
+  const agregarSabores = async (text: string) => {
+    if (!text.trim()) {
+      Alert.alert('Error', 'El campo no puede quedar vacío');
+      return;
+    }
+
+    try {
+      let response;
+      const nuevoSabores = { descripcion: text };
+
+      if (saboresEditar.id !== 0) {
+        nuevoSabores.id = saboresEditar.id;
+        response = await fetch(`http://localhost:5000/sabores`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(nuevoSabores),
+        });
+      } else {
+        response = await fetch('http://localhost:5000/sabores', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(nuevoSabores),
+        });
+      }
+
+      if (!response.ok) {
+        Alert.alert('Ocurrió un error');
+        return;
+      }
+
+      Alert.alert('Agregado exitosamente');
+      await getSabores();
+    } catch (error) {
+      Alert.alert('Error', 'Ocurrió un error: ' + error);
+    }
+  };
+
+  const getSabores = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/sabores');
+      const respuestaSabores = await response.json();
+      setSabores(respuestaSabores);
+    } catch (error) {
+      Alert.alert('Error', 'Ocurrió un error: ' + error);
+    }
+  };
+
+  const deleteSabores = async (id: number) => {
+    try {
+      await fetch(`http://localhost:5000/sabores/${id}`, { method: 'DELETE' });
+      await getSabores();
+    } catch (error) {
+      console.error('Error al eliminar sabor:', error);
+    }
+  };
+
+  const setEditingSabores = (sabores: Sabores) => {
+    setSaboresEditar(sabores);
+    setTexto(sabores.descripcion);
+  };
+
+  useEffect(() => {
+    getSabores();
+  }, []);
+
+  return (
+    <SaboresContext.Provider value={{
+      sabores,
+      agregarSabores,
+      getSabores,
+      deleteSabores,
+      setEditingSabores,
+      texto,
+      setTexto
+    }}>
+      {children}
+    </SaboresContext.Provider>
+  );
+};
+
+export const useSaboresContext = () => useContext(SaboresContext);
+
+
+*/

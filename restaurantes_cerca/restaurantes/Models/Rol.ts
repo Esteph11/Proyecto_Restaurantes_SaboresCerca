@@ -1,6 +1,4 @@
-export interface Rol {
-    id: number;
-    nombre: string;
-    email: string;
-    rol: 'admin' | 'usuario';
-}
+export interface Rol {  
+    id: number;      
+    nombre: string;  //(ej: 'Usuario', 'Administrador')  
+}  

@@ -1,26 +1,94 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';  
+import { createContext } from 'react';
 
-const SaboresContext = createContext();  
+export const SaboresContext = createContext({
+  usuarios: [],
+  negocios: [],
+  menus: [],
+  comentarios: [],
+  promociones: [],
+  puntosFidelidad: [],
+  agregarUsuario: (usuario: any) => {},
+  actualizarUsuario: (usuario: any) => {},
+  eliminarUsuario: (id: number) => {},
+  // Define aquí las funciones adicionales si es necesario
+});
 
-export const SaboresProvider = ({ children }) => {  
-    const [usuarios, setUsuarios] = useState([]);  // Cambié "userusuarios" a "usuarios" para mayor claridad  
 
-    useEffect(() => {  
-        // Simula la carga de usuarios, puedes cargar desde una API  
-        const usuariosData = [  // Cambié el nombre de "Usuarios" a "usuariosData" para evitar confusiones  
-            { correo_electronico: 'Admin', contraseña: 'pass', id_rol: 2 },  
-            { correo_electronico: 'Ana Castillo', contraseña: 'user123', id_rol: 1 },  
-        ];  
-        setUsuarios(usuariosData);  // Cambié "userusuarios" a "usuariosData" para definir el estado correctamente  
-    }, []);  
 
-    return (  
-        <SaboresContext.Provider value={{ usuarios }}>  // Cambié "userusuarios" a "usuarios"  
-            {children}  
-        </SaboresContext.Provider>  
-    );  
-};  
 
-export const useSaboresContext = () => {  
-    return useContext(SaboresContext);  
-};  
+/*
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { Usuarios } from '../Models/Usuarios';
+
+const ContextUsuarios = createContext<{ usuarios: Usuarios[] }>({ usuarios: [] });
+
+export const UsuariosProvider = ({ children }: { children: ReactNode }) => {
+  const [usuarios, setUsuarios] = useState<Usuarios[]>([]);
+
+  useEffect(() => {
+    const usuariosData = [
+      {
+        id_usuario: 1,
+        nombre: 'Admin',
+        email: 'admin@example.com',
+        password: 'pass',
+        rol: 'Admin',
+        id_rol: 2,
+      },
+      {
+        id_usuario: 2,
+        nombre: 'Ana Castillo',
+        email: 'ana.castillo@example.com',
+        password: 'user123',
+        rol: 'Usuario',
+        id_rol: 1,
+      },
+    ];
+    setUsuarios(usuariosData);
+  }, []);
+  
+  return (
+    <ContextUsuarios.Provider value={{ usuarios }}>
+      {children}
+    </ContextUsuarios.Provider>
+  );
+};
+
+export const useUsuariosContext = () => useContext(ContextUsuarios);
+
+
+/*import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { Usuarios } from '../Models/Usuarios';
+
+interface UsuarioContextType {
+  usuarios: Usuarios[];
+}
+
+const SaboresCercaContext = createContext<UsuarioContextType | undefined>(undefined);
+
+export const SaboresCercaProvider = ({ children }: { children: ReactNode }) => {
+  const [usuarios, setUsuarios] = useState<Usuarios[]>([]);
+
+  useEffect(() => {
+    const usuariosData: Usuarios[] = [
+      { id_usuario: 1, nombre: 'Admin', email: 'Admin', telefono: 123456, direccion: 'Admin Address', rol: 'admin' },
+      { id_usuario: 2, nombre: 'Ana Castillo', email: 'Ana Castillo', telefono: 987654, direccion: 'User Address', rol: 'usuario' },
+    ];
+    setUsuarios(usuariosData);
+  }, []);
+
+  return (
+    <SaboresCercaContext.Provider value={{ usuarios }}>
+      {children}
+    </SaboresCercaContext.Provider>
+  );
+};
+
+export const useSaboresContext = () => {
+  const context = useContext(SaboresCercaContext);
+  if (!context) {
+    throw new Error('useSaboresContext debe usarse dentro de un SaboresCercaProvider');
+  }
+  return context;
+};
+*/

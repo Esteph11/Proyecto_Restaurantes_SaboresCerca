@@ -20,6 +20,9 @@ const Usuarios = sequelize.define('Usuarios', {
     direccion: {  
         type: DataTypes.STRING,  
     },  
+    password: {
+        type: DataTypes.STRING,
+    },
     id_rol: {  
         type: DataTypes.INTEGER,  
         references: {  

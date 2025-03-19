@@ -11,27 +11,34 @@ create database SaboresCerca;
 	SHOW DATABASES;
     USE SaboresCerca;
 
+-- Limpiar Tablas --
+/*DROP TABLE IF EXISTS Comentarios;  
+DROP TABLE IF EXISTS Menus;  
+DROP TABLE IF EXISTS Promociones;  
+DROP TABLE IF EXISTS PuntosFidelidad;  
+DROP TABLE IF EXISTS Negocios;  
+DROP TABLE IF EXISTS Usuarios;  
+DROP TABLE IF EXISTS Roles; */
 
 CREATE TABLE Roles (  
     id INT AUTO_INCREMENT PRIMARY KEY,  
     nombre VARCHAR(50) NOT NULL  
-    password VARCHAR(255),
-    rol ENUM('admin', 'usuario')
 );  
 
 CREATE TABLE Usuarios (  
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,  
-    nombre VARCHAR(100),  
-    email VARCHAR(100),  
+    nombre VARCHAR(100) NOT NULL,  
+    email VARCHAR(100) NOT NULL UNIQUE,  
     telefono VARCHAR(15),  
     direccion VARCHAR(250),  
-	id_rol INT,  
+    password VARCHAR(255) NOT NULL,  
+    id_rol INT NOT NULL,  
     FOREIGN KEY (id_rol) REFERENCES Roles(id)  
 );  
-
+ 
 CREATE TABLE Negocios (  
     id_negocio INT AUTO_INCREMENT PRIMARY KEY,  
-    nombre_negocio VARCHAR(100),  
+    nombre_negocio VARCHAR(100) NOT NULL,  
     direccion VARCHAR(250),  
     telefono VARCHAR(15),  
     horario VARCHAR(100),  
@@ -41,17 +48,17 @@ CREATE TABLE Negocios (
 
 CREATE TABLE Menus (  
     id_menu INT AUTO_INCREMENT PRIMARY KEY,  
-    id_negocio INT,  
-    platillo VARCHAR(100),  
-    precio DECIMAL(10,2),  
+    id_negocio INT NOT NULL,  
+    platillo VARCHAR(100) NOT NULL,  
+    precio DECIMAL(10,2) NOT NULL,  
     descripcion TEXT,  
     FOREIGN KEY (id_negocio) REFERENCES Negocios(id_negocio)  
 );  
-DROP TABLE IF EXISTS Comentarios;
+
 CREATE TABLE Comentarios (  
     id_comentario INT AUTO_INCREMENT PRIMARY KEY,  
-    id_usuario INT,  
-    id_negocio INT,  
+    id_usuario INT NOT NULL,  
+    id_negocio INT NOT NULL,  
     calificacion INT CHECK (calificacion BETWEEN 1 AND 5),  
     notas TEXT,  
     fecha DATETIME DEFAULT CURRENT_TIMESTAMP,  
@@ -61,7 +68,7 @@ CREATE TABLE Comentarios (
 
 CREATE TABLE Promociones (  
     id_promocion INT AUTO_INCREMENT PRIMARY KEY,  
-    id_negocio INT,  
+    id_negocio INT NOT NULL,  
     descripcion TEXT,  
     fecha_inicio DATETIME,  
     fecha_fin DATETIME,  
@@ -79,16 +86,14 @@ INSERT INTO Roles (nombre) VALUES
 ('Usuario'),   
 ('Administrador'); 
 
-INSERT INTO Usuario (nombre, email, telefono, direccion, id_rol) VALUES  
-('Admin', 'administrador.admin@example.com', '9999-1111', 'Calle de la Esquina 1', 2);  -- id_rol = 2 para Administrador  
-
 /*1. Insertar datos en la tabla Usuarios*/
-INSERT INTO Usuarios (nombre, email, telefono, direccion, id_rol) VALUES  
-('Juan Pérez', 'juan.perez@example.com', '9876-1234', 'Calle Falsa 123, Tegucigalpa',1),  
-('María López', 'maria.lopez@example.com', '9678-1234', 'Avenida Siempre Viva 742, San Pedro Sula',1),  
-('Carlos Hernández', 'carlos.hernandezez@example.com', '9876-4321', 'Callejón del Beso 5, La Ceiba',1),  
-('Lucía Maradiaga', 'lucia.mardiaga@example.com', '9678-4321', 'Boulevard de los Sueños 456, Choluteca',1),  
-('Ana Castillo', 'ana.castillo@example.com', '9432-1780-', 'Plaza Mayor 789, Comayagua',1);  
+INSERT INTO Usuarios (nombre, email, telefono, direccion, password, id_rol) VALUES  
+('Admin', 'administrador.admin@example.com', '9999-1111', 'Calle de la Esquina 1', 'hashed_admin_password', 2),  -- Usar una contraseña segura  
+('Juan Pérez', 'juan.perez@example.com', '9876-1234', 'Calle Falsa 123, Tegucigalpa', 'hashed_user_password1', 1),  
+('María López', 'maria.lopez@example.com', '9678-1234', 'Avenida Siempre Viva 742, San Pedro Sula', 'hashed_user_password2', 1),  
+('Carlos Hernández', 'carlos.hernandezes@example.com', '9876-4321', 'Callejón del Beso 5, La Ceiba', 'hashed_user_password3', 1),  
+('Lucía Maradiaga', 'lucia.mardiaga@example.com', '9678-4321', 'Boulevard de los Sueños 456, Choluteca', 'hashed_user_password4', 1),  
+('Ana Castillo', 'ana.castillo@example.com', '9432-1780', 'Plaza Mayor 789, Comayagua', 'hashed_user_password5', 1);  
 
 /*2. Insertar datos en la tabla Negocios*/
 INSERT INTO Negocios (nombre_negocio, direccion, telefono, horario, categoria, descripcion) VALUES  
@@ -106,7 +111,7 @@ INSERT INTO Menus (id_negocio, platillo, precio, descripcion) VALUES
 (3, 'Hamburguesa Playa', 100.00, 'Hamburguesa con queso, cebolla y salsa especial.'),  
 (4, 'Ensalada Vegana', 90.00, 'Ensalada fresca con vegetales orgánicos y aderezo de limón.');  
 
-/*Insertar datos en la tabla Comentarios*/
+/*4. Insertar datos en la tabla Comentarios*/
 INSERT INTO Comentarios (id_usuario, id_negocio, calificacion, notas, fecha) VALUES  
 (1, 1, 5, '¡La mejor sopa de caracol de Tegucigalpa!', NOW()),  
 (2, 2, 4, 'Muy buena pizza, aunque un poco lenta la atención.', NOW()),  
@@ -114,7 +119,7 @@ INSERT INTO Comentarios (id_usuario, id_negocio, calificacion, notas, fecha) VAL
 (4, 4, 5, 'Comida vegana deliciosa, altamente recomendado.', NOW()),  
 (5, 5, 5, 'Postres únicos y deliciosos, deben probarlos.', NOW());  
 
-/*Insertar datos en la tabla Promociones*/
+/*5. Insertar datos en la tabla Promociones*/
 INSERT INTO Promociones (id_negocio, descripcion, fecha_inicio, fecha_fin) VALUES  
 (1, '20% de descuento en sopa de caracol los miércoles', NOW(), DATE_ADD(NOW(), INTERVAL 1 MONTH)),  
 (2, 'Compra una pizza y obtén una bebida gratis', NOW(), DATE_ADD(NOW(), INTERVAL 2 MONTH)),  
@@ -122,10 +127,19 @@ INSERT INTO Promociones (id_negocio, descripcion, fecha_inicio, fecha_fin) VALUE
 (4, 'Descuento del 15% para los que traigan a un amigo', NOW(), DATE_ADD(NOW(), INTERVAL 1 MONTH)),  
 (5, '2x1 en postres todos los viernes', NOW(), DATE_ADD(NOW(), INTERVAL 1 MONTH));  
 
-/* Insertar datos en la tabla PuntosFidelidad*/
+/*6.  Insertar datos en la tabla PuntosFidelidad*/
 INSERT INTO PuntosFidelidad (id_usuario, puntos_acumulados) VALUES  
 (1, 40),  
 (2, 20),  
 (3, 25),  
 (4, 35),  
 (5, 15);  
+
+
+select * from Roles;
+select * from Usuarios;  
+select * from Negocios; 
+select * from PuntosFidelidad;   
+select * from Promociones;  
+select * from Menus;  
+select * from Comentarios;  
