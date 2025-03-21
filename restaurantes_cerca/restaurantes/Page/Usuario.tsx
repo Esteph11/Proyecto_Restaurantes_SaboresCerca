@@ -48,30 +48,3 @@ const styles = StyleSheet.create({
 });  
 
 export default Usuario;  
-
-/*
-import React from 'react';  
-import { View, Text, StyleSheet } from 'react-native';  
-
-const Usuario = () => {  
-  return (  
-    <View style={styles.container}>  
-      <Text style={styles.title}>Bienvenido al panel de usuario</Text>  
-
-    </View>  
-  );  
-};  
-
-const styles = StyleSheet.create({  
-  container: {  
-    flex: 1,  
-    justifyContent: 'center',  
-    alignItems: 'center',  
-  },  
-  title: {  
-    fontSize: 24,  
-  },  
-});  
-
-export default Usuario;  
-*/

@@ -8,7 +8,6 @@ const Comentarios = () => {
   const [comentario, setComentario] = useState('');
 
   const handleAgregarComentario = (negocioId: number) => {
-    // Lógica para agregar comentario
     console.log(`Comentario para negocio ${negocioId}: ${comentario}`);
     setComentario('');
   };

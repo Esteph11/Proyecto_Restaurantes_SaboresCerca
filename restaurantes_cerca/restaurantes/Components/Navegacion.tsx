@@ -1,4 +1,4 @@
-import React from 'react';  
+import React, { createContext, useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';  
 import { createStackNavigator } from '@react-navigation/stack';  
 import Login from '../Page/Login';  
@@ -7,10 +7,10 @@ import Administrador from '../Page/Administrador';
 import Usuario from '../Page/Usuario';  
 import UsuariosAdmin from '../Page/Admin/UsuariosAdmin';  
 import Negocios from '../Page/Admin/Negocios';  
-import Menus from '../Page/Admin/Menus';  
+import MenusAdmin from '../Page/Admin/MenusAdmin';  
 import NegociosUser from '../Page/User/NegociosUser';  
 import Comentarios from '../Page/User/Comentarios';  
-import { useSaboresContext } from '../Context/SaboresContext';
+import { useSaboresContext } from '../Context/useSaboresContext';
 
 const AuthStack = createStackNavigator();
 const AppStack = createStackNavigator();
@@ -24,9 +24,10 @@ export type RootStackParamList = {
   Menus: undefined;
 };
 
+
 const Navegacion = () => {
   
-  const { isLoggedIn } = useSaboresContext();
+const { isLoggedIn } = useSaboresContext();
 
   return (
     <NavigationContainer>
@@ -34,7 +35,7 @@ const Navegacion = () => {
         <AppStack.Navigator>
           <AppStack.Screen name="Admin" component={Administrador} />
           <AppStack.Screen name="Usuarios" component={Usuario} />
-          <AppStack.Screen name="Menus" component={Menus} />
+          <AppStack.Screen name="MenusAdmin" component={MenusAdmin} />
           <AppStack.Screen name="Negocios" component={Negocios} />
           <AppStack.Screen name="UsuariosAdmin" component={UsuariosAdmin} />
           <AppStack.Screen name="NegociosUser" component={NegociosUser} />
@@ -56,22 +57,4 @@ export default Navegacion;
 
 
 
-/*import React from 'react';  
-import { NavigationContainer } from '@react-navigation/native';  
-import { createStackNavigator } from '@react-navigation/stack';  
-import Administrador from '../Page/Administrador';
-import Login from '../Page/Login';
-
-export default function Navegacion() {
-  const Stack = createStackNavigator();  
-
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Restaurantes Sabores Cerca" component={Login} />
-        <Stack.Screen name="Administrador" component={Administrador} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-}
 

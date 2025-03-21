@@ -3,7 +3,7 @@ import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
 import { SaboresContext } from '../../Context/SaboresContext';
 
 const NegociosUser = () => {
-  const { negocios } = useContext(SaboresContext);// Correcto uso del hook
+  const { negocios } = useContext(SaboresContext);
 
   return (
     <View style={styles.container}>
