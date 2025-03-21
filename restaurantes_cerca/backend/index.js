@@ -67,6 +67,8 @@ app.post('/usuarios', async (req, res) => {
         const nuevoUsuario = await Usuario.create({
             nombre,
             email,
+            telefono,
+            direccion,
             password: hashedPassword,
             rol
         });
@@ -77,6 +79,28 @@ app.post('/usuarios', async (req, res) => {
         res.status(500).json({ mensaje: 'Error al crear usuario' });
     }
 }); 
+
+app.put('/usuarios/:id', async (req, res) => {
+    try {
+      const { nombre, email, telefono, direccion, password, id } = req.body;
+  
+      // Creamos un objeto con los campos que vienen en el cuerpo
+      let updatedUser = {nombre, email, telefono, direccion, password, id };
+       
+      // Actualizamos el usuario con los datos proporcionados
+      const [updated] = await Usuarios.update(updatedUser, {
+        where: { id_usuario: req.params.id }
+      });
+  
+      if (updated) {
+        res.status(200).json({ mensaje: 'Datos del usuario actualizados' });
+      } else {
+        res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+    } catch (error) {
+      res.status(500).json({ error: 'Error al actualizar el usuario' });
+    }
+  });
 
 // CRUD para Roles  
 app.post('/roles', async (req, res) => {  
@@ -129,7 +153,7 @@ app.delete('/roles/:id', async (req, res) => {
 });  
 
 // CRUD para Usuarios  
-app.post('/usuarios', async (req, res) => {  
+app.post('/usuario', async (req, res) => {  
     try {  
         const usuario = await Usuarios.create(req.body);  
         res.status(201).json(usuario);  
@@ -138,16 +162,16 @@ app.post('/usuarios', async (req, res) => {
     }  
 });  
 
-app.get('/usuarios', async (req, res) => {  
+app.get('/usuario', async (req, res) => {  
     try {  
-        const usuarios = await Usuarios.findAll();  
-        res.status(200).json(usuarios);  
+        const usuario = await Usuarios.findAll();  
+        res.status(200).json(usuario);  
     } catch (error) {  
         res.status(500).json({ error: error.message });  
     }  
 });  
 
-app.put('/usuarios/:id', async (req, res) => {  
+app.put('/usuario/:id', async (req, res) => {  
     try {  
         const [date] = await Usuarios.update(req.body, {  
             where: { id_usuario: req.params.id },  
@@ -163,7 +187,7 @@ app.put('/usuarios/:id', async (req, res) => {
     }  
 });  
 
-app.delete('/usuarios/:id', async (req, res) => {  
+app.delete('/usuario/:id', async (req, res) => {  
     try {  
         const deleted = await Usuarios.destroy({  
             where: { id_usuario: req.params.id },  

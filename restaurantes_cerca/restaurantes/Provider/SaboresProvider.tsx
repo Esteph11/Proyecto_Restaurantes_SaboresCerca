@@ -1,247 +1,183 @@
-import { View, Text, Alert } from 'react-native';  
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';  
-import { SaboresContext } from '../Context/SaboresContex';  
-import { Rol } from '../Modelos/Rol'
-import { useNavigation } from '@react-navigation/native'
+import { View, Text } from 'react-native'
+import React, { useState, useEffect, ReactNode } from 'react';
+import { Usuarios } from '../Models/Usuarios';
+import { Negocios } from '../Models/Negocios';
+import { Menus } from '../Models/Menus';
+import { Comentarios } from '../Models/Comentarios';
+import { SaboresContext } from '../Context/SaboresContext';
 
-interface ViewRect {  
-    children: ReactNode;  
-}  
-
-// Proveedor de contexto  
-const SaboresProvider = ({ children }: ViewRect) => {  
-    const [usuarios, setUsuarios] = useState([]);  
-    const [negocios, setNegocios] = useState([]);  
-    const [menus, setMenus] = useState([]);  
-    const [comentarios, setComentarios] = useState([]);  
-    const [promociones, setPromociones] = useState([]);  
-    const [puntosFidelidad, setPuntosFidelidad] = useState([]);  
-
-    useEffect(() => {  
-        listarUsuarios();  
-        listarNegocios();  
-        listarMenus();  
-        listarComentarios();  
-        listarPromociones();  
-        listarPuntosFidelidad();  
-    }, []);  
-
-    // Funciones para listar datos  
-    async function listarUsuarios() {  
-        const resp = await fetch('http://localhost:5000/usuarios');  
-        const data = await resp.json();  
-        setUsuarios(data);  
-    }  
-
-    async function listarNegocios() {  
-        const resp = await fetch('http://localhost:5000/negocios');  
-        const data = await resp.json();  
-        setNegocios(data);  
-    }  
-
-    async function listarMenus() {  
-        const resp = await fetch('http://localhost:5000/menus');  
-        const data = await resp.json();  
-        setMenus(data);  
-    }  
-
-    async function listarComentarios() {  
-        const resp = await fetch('http://localhost:5000/comentarios');  
-        const data = await resp.json();  
-        setComentarios(data);  
-    }  
-
-    async function listarPromociones() {  
-        const resp = await fetch('http://localhost:5000/promociones');  
-        const data = await resp.json();  
-        setPromociones(data);  
-    }  
-
-    async function listarPuntosFidelidad() {  
-        const resp = await fetch('http://localhost:5000/puntosFidelidad');  
-        const data = await resp.json();  
-        setPuntosFidelidad(data);  
-    }  
-
-    // Funciones para agregar, actualizar y eliminar  
-    async function agregarUsuario(usuario) {  
-        const resp = await fetch('http://localhost:5000/usuarios', {  
-            method: 'POST',  
-            headers: { 'Content-Type': 'application/json' },  
-            body: JSON.stringify(usuario),  
-        });  
-        if (resp.ok) {  
-            listarUsuarios(); // Actualiza la lista después de agregar  
-            alert('Usuario agregado correctamente');  
-        } else {  
-            alert('Ocurrió un error al agregar usuario');  
-        }  
-    }  
-
-    async function actualizarUsuario(usuario) {  
-        const resp = await fetch(`http://localhost:5000/usuarios/${usuario.id_usuario}`, {  
-            method: 'PUT',  
-            headers: { 'Content-Type': 'application/json' },  
-            body: JSON.stringify(usuario),  
-        });  
-        if (resp.ok) {  
-            listarUsuarios(); // Actualiza la lista después de actualizar  
-            alert('Usuario actualizado correctamente');  
-        } else {  
-            alert('Ocurrió un error al actualizar usuario');  
-        }  
-    }  
-
-    async function eliminarUsuario(id) {  
-        const resp = await fetch(`http://localhost:5000/usuarios/${id}`, {  
-            method: 'DELETE',  
-        });  
-        if (resp.ok) {  
-            listarUsuarios(); // Actualiza la lista después de eliminar  
-            alert('Usuario eliminado correctamente');  
-        } else {  
-            alert('Ocurrió un error al eliminar usuario');  
-        }  
-    }  
-
-    // Puedes agregar funciones similares para Negocios, Menus, Comentarios, Promociones y PuntosFidelidad  
-
-    return (  
-        <SaboresContext.Provider  
-            value={{  
-                usuarios,  
-                negocios,  
-                menus,  
-                comentarios,  
-                promociones,  
-                puntosFidelidad,  
-                agregarUsuario,  
-                actualizarUsuario,  
-                eliminarUsuario,  
-                // Agrega aquí las funciones de Negocios, Menus, Comentarios, etc.  
-            }}  
-        >  
-            {children}  
-        </SaboresContext.Provider>  
-    );  
-};  
-
-// Hook para usar el contexto  
-export const useSaboresContext = () => {  
-    return useContext(SaboresContext); // Asegúrate de devolver el contexto correcto  
-};  
-
-export default SaboresProvider;
-
-
-/*
-
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { Alert } from 'react-native';
-import { Sabores } from '../Models/Sabores';
-
-interface SaboresContextType {
-  sabores: Sabores[];
-  agregarSabores: (descripcion: string) => void;
-  getSabores: () => Promise<void>;
-  deleteSabores: (id: number) => Promise<void>;
-  setEditingSabores: (sabores: Sabores) => void;
-  texto: string;
-  setTexto: (texto: string) => void;
-}
-
-const SaboresContext = createContext<SaboresContextType>({} as SaboresContextType);
-
-interface Props {
+interface NodeReact {
   children: ReactNode;
 }
 
-export const SaboresProvider = ({ children }: Props) => {
-  const [sabores, setSabores] = useState<Sabores[]>([]);
-  const [texto, setTexto] = useState('');
-  const [saboresEditar, setSaboresEditar] = useState<Sabores>({ id: 0, descripcion: '' });
+export default function SaboresProvider({ children }: NodeReact) {
+  const [usuarios, setUsuarios] = useState<Usuarios[]>([]);
+  const [negocios, setNegocios] = useState<Negocios[]>([]);
+  const [menus, setMenus] = useState<Menus[]>([]);
+  const [comentarios, setComentarios] = useState<Comentarios[]>([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const agregarSabores = async (text: string) => {
-    if (!text.trim()) {
-      Alert.alert('Error', 'El campo no puede quedar vacío');
-      return;
-    }
-
-    try {
-      let response;
-      const nuevoSabores = { descripcion: text };
-
-      if (saboresEditar.id !== 0) {
-        nuevoSabores.id = saboresEditar.id;
-        response = await fetch(`http://localhost:5000/sabores`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(nuevoSabores),
-        });
-      } else {
-        response = await fetch('http://localhost:5000/sabores', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(nuevoSabores),
-        });
-      }
-
-      if (!response.ok) {
-        Alert.alert('Ocurrió un error');
-        return;
-      }
-
-      Alert.alert('Agregado exitosamente');
-      await getSabores();
-    } catch (error) {
-      Alert.alert('Error', 'Ocurrió un error: ' + error);
-    }
-  };
-
-  const getSabores = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/sabores');
-      const respuestaSabores = await response.json();
-      setSabores(respuestaSabores);
-    } catch (error) {
-      Alert.alert('Error', 'Ocurrió un error: ' + error);
-    }
-  };
-
-  const deleteSabores = async (id: number) => {
-    try {
-      await fetch(`http://localhost:5000/sabores/${id}`, { method: 'DELETE' });
-      await getSabores();
-    } catch (error) {
-      console.error('Error al eliminar sabor:', error);
-    }
-  };
-
-  const setEditingSabores = (sabores: Sabores) => {
-    setSaboresEditar(sabores);
-    setTexto(sabores.descripcion);
-  };
-
+  const API_URL = 'http://192.168.0.192:3000';
   useEffect(() => {
-    getSabores();
+    const fetchData = async () => {
+      await listarUsuarios();
+      await listarNegocios();
+      await listarMenus();
+      await listarComentarios();
+
+    };
+    fetchData();
   }, []);
 
+  // Funciones para listar datos  
+  const listarUsuarios = async () => {
+    try {
+      const resp = await fetch('http://localhost:3000/usuarios');
+      if (!resp.ok) throw new Error('Error al cargar usuarios');
+      const data = await resp.json();
+      setUsuarios(data);
+    } catch (error) {
+      console.error(error);
+      alert(error instanceof Error ? error.message : 'Ocurrió un error desconocido');
+    }
+  }
+
+  const listarNegocios = async () => {
+    try {
+      const resp = await fetch('http://localhost:3000/negocios');
+      if (!resp.ok) throw new Error('Error al cargar negocios');
+      const data = await resp.json();
+      setNegocios(data);
+    } catch (error) {
+      console.error(error);
+      alert(error instanceof Error ? error.message : 'Ocurrió un error desconocido');
+    }
+  }
+
+  const listarMenus = async () => {
+    try {
+      const resp = await fetch('http://localhost:3000/menus');
+      if (!resp.ok) throw new Error('Error al cargar menús');
+      const data = await resp.json();
+      setMenus(data);
+    } catch (error) {
+      console.error(error);
+      alert(error instanceof Error ? error.message : 'Ocurrió un error desconocido');
+    }
+  }
+
+  const listarComentarios = async () => {
+    try {
+      const resp = await fetch('http://localhost:3000/comentarios');
+      if (!resp.ok) throw new Error('Error al cargar comentarios');
+      const data = await resp.json();
+      setComentarios(data);
+    } catch (error) {
+      console.error(error);
+      alert(error instanceof Error ? error.message : 'Ocurrió un error desconocido');
+    }
+  }
+
+  /*const listarPromociones = async () => {  
+    try {  
+      const resp = await fetch('http://localhost:5000/promociones');  
+      if (!resp.ok) throw new Error('Error al cargar promociones');  
+      const data = await resp.json();  
+      setPromociones(data);  
+    } catch (error) {  
+      console.error(error);  
+      alert(error instanceof Error ? error.message : 'Ocurrió un error desconocido');
+    }  
+  }   
+
+  const listarPuntosFidelidad = async () => {  
+    try {  
+      const resp = await fetch('http://localhost:5000/puntosFidelidad');  
+      if (!resp.ok) throw new Error('Error al cargar puntos de fidelidad');  
+      const data = await resp.json();  
+      setPuntosFidelidad(data);  
+    } catch (error) {  
+      console.error(error);  
+      alert(error instanceof Error ? error.message : 'Ocurrió un error desconocido');
+    }   
+  } */
+
+  // Funciones CRUD para usuarios (ejemplo)  
+  const agregarUsuario = async (usuario: Usuarios) => {
+    try {
+      const resp = await fetch('http://localhost:3000/usuarios', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(usuario),
+      });
+      if (!resp.ok) throw new Error('Error al agregar usuario');
+      await listarUsuarios();
+      alert('Usuario agregado correctamente');
+    } catch (error) {
+      console.error(error);
+      alert(error instanceof Error ? error.message : 'Ocurrió un error desconocido');
+    }
+  }
+
+  const actualizarUsuario = async (usuario: Usuarios) => {
+    try {
+      const resp = await fetch(`http://localhost:3000/usuarios/${usuario.id_usuario}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(usuario),
+      });
+      if (!resp.ok) throw new Error('Error al actualizar usuario');
+      await listarUsuarios();
+      alert('Usuario actualizado correctamente');
+    } catch (error) {
+      console.error(error);
+      alert(error instanceof Error ? error.message : 'Ocurrió un error desconocido');
+    }
+  }
+
+  const eliminarUsuario = async (id: number) => {
+    try {
+      const resp = await fetch(`http://localhost:3000/usuarios/${id}`, {
+        method: 'DELETE',
+      });
+      if (!resp.ok) throw new Error('Error al eliminar usuario');
+      await listarUsuarios();
+      alert('Usuario eliminado correctamente');
+    } catch (error) {
+      console.error(error);
+      alert(error instanceof Error ? error.message : 'Ocurrió un error desconocido');
+    }
+  }
+
   return (
-    <SaboresContext.Provider value={{
-      sabores,
-      agregarSabores,
-      getSabores,
-      deleteSabores,
-      setEditingSabores,
-      texto,
-      setTexto
-    }}>
+    <SaboresContext.Provider
+      value={{
+        usuarios,
+        setUsuarios,
+        isLoggedIn,
+        setIsLoggedIn,
+        obtenerUsuarios: listarUsuarios, // Puedes usar listarUsuarios como obtenerUsuarios
+        negocios,
+        setNegocios,
+        menus,
+        setMenus,
+        comentarios,
+        setComentarios,
+        agregarUsuario,
+        actualizarUsuario,
+        eliminarUsuario,
+        agregarNegocio,
+        actualizarNegocio,
+        eliminarNegocio,
+        agregarMenu,
+        actualizarMenu,
+        eliminarMenu,
+        agregarComentario,
+        actualizarComentario,
+        eliminarComentario,
+      }}
+    >
       {children}
     </SaboresContext.Provider>
   );
 };
-
-export const useSaboresContext = () => useContext(SaboresContext);
-
-
-*/

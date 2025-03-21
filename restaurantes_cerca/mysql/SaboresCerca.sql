@@ -18,12 +18,7 @@ DROP TABLE IF EXISTS Promociones;
 DROP TABLE IF EXISTS PuntosFidelidad;  
 DROP TABLE IF EXISTS Negocios;  
 DROP TABLE IF EXISTS Usuarios;  
-DROP TABLE IF EXISTS Roles; */
-
-CREATE TABLE Roles (  
-    id INT AUTO_INCREMENT PRIMARY KEY,  
-    nombre VARCHAR(50) NOT NULL  
-);  
+DROP TABLE IF EXISTS Roles;*/
 
 CREATE TABLE Usuarios (  
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,  
@@ -32,8 +27,7 @@ CREATE TABLE Usuarios (
     telefono VARCHAR(15),  
     direccion VARCHAR(250),  
     password VARCHAR(255) NOT NULL,  
-    id_rol INT NOT NULL,  
-    FOREIGN KEY (id_rol) REFERENCES Roles(id)  
+	rol ENUM('administrador', 'usuario')
 );  
  
 CREATE TABLE Negocios (  
@@ -82,18 +76,15 @@ CREATE TABLE PuntosFidelidad (
     FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario)  
 );  
 
-INSERT INTO Roles (nombre) VALUES  
-('Usuario'),   
-('Administrador'); 
 
 /*1. Insertar datos en la tabla Usuarios*/
-INSERT INTO Usuarios (nombre, email, telefono, direccion, password, id_rol) VALUES  
-('Admin', 'administrador.admin@example.com', '9999-1111', 'Calle de la Esquina 1', 'hashed_admin_password', 2),  -- Usar una contraseña segura  
-('Juan Pérez', 'juan.perez@example.com', '9876-1234', 'Calle Falsa 123, Tegucigalpa', 'hashed_user_password1', 1),  
-('María López', 'maria.lopez@example.com', '9678-1234', 'Avenida Siempre Viva 742, San Pedro Sula', 'hashed_user_password2', 1),  
-('Carlos Hernández', 'carlos.hernandezes@example.com', '9876-4321', 'Callejón del Beso 5, La Ceiba', 'hashed_user_password3', 1),  
-('Lucía Maradiaga', 'lucia.mardiaga@example.com', '9678-4321', 'Boulevard de los Sueños 456, Choluteca', 'hashed_user_password4', 1),  
-('Ana Castillo', 'ana.castillo@example.com', '9432-1780', 'Plaza Mayor 789, Comayagua', 'hashed_user_password5', 1);  
+INSERT INTO Usuarios (nombre, email, telefono, direccion, password, rol) VALUES  
+('Admin', 'administrador.admin@example.com', '9999-1111', 'Calle de la Esquina 1', 'hashed_admin_password', 'administrador'),  -- Usar una contraseña segura  
+('Juan Pérez', 'juan.perez@example.com', '9876-1234', 'Calle Falsa 123, Tegucigalpa', 'hashed_user_password1', 'usuario'),  
+('María López', 'maria.lopez@example.com', '9678-1234', 'Avenida Siempre Viva 742, San Pedro Sula', 'hashed_user_password2', 'usuario'),  
+('Carlos Hernández', 'carlos.hernandezes@example.com', '9876-4321', 'Callejón del Beso 5, La Ceiba', 'hashed_user_password3','usuario'),  
+('Lucía Maradiaga', 'lucia.mardiaga@example.com', '9678-4321', 'Boulevard de los Sueños 456, Choluteca', 'hashed_user_password4', 'usuario'),  
+('Ana Castillo', 'ana.castillo@example.com', '9432-1780', 'Plaza Mayor 789, Comayagua', 'hashed_user_password5','usuario');  
 
 /*2. Insertar datos en la tabla Negocios*/
 INSERT INTO Negocios (nombre_negocio, direccion, telefono, horario, categoria, descripcion) VALUES  
@@ -136,7 +127,6 @@ INSERT INTO PuntosFidelidad (id_usuario, puntos_acumulados) VALUES
 (5, 15);  
 
 
-select * from Roles;
 select * from Usuarios;  
 select * from Negocios; 
 select * from PuntosFidelidad;   
