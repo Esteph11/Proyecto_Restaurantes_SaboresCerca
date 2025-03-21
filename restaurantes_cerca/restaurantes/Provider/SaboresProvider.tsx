@@ -1,183 +1,135 @@
-import { View, Text } from 'react-native'
-import React, { useState, useEffect, ReactNode } from 'react';
-import { Usuarios } from '../Models/Usuarios';
-import { Negocios } from '../Models/Negocios';
-import { Menus } from '../Models/Menus';
-import { Comentarios } from '../Models/Comentarios';
-import { SaboresContext } from '../Context/SaboresContext';
+import { View, Text, Alert } from 'react-native';  
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';  
+import { SaboresContext } from '../Context/SaboresContex';  
+import { Rol } from '../Modelos/Rol'
+import { useNavigation } from '@react-navigation/native'
 
-interface NodeReact {
-  children: ReactNode;
-}
+interface ViewRect {  
+    children: ReactNode;  
+}  
 
-export default function SaboresProvider({ children }: NodeReact) {
-  const [usuarios, setUsuarios] = useState<Usuarios[]>([]);
-  const [negocios, setNegocios] = useState<Negocios[]>([]);
-  const [menus, setMenus] = useState<Menus[]>([]);
-  const [comentarios, setComentarios] = useState<Comentarios[]>([]);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+// Proveedor de contexto  
+const SaboresProvider = ({ children }: ViewRect) => {  
+    const [usuarios, setUsuarios] = useState([]);  
+    const [negocios, setNegocios] = useState([]);  
+    const [menus, setMenus] = useState([]);  
+    const [comentarios, setComentarios] = useState([]);  
+    const [promociones, setPromociones] = useState([]);  
+    const [puntosFidelidad, setPuntosFidelidad] = useState([]);  
 
-  const API_URL = 'http://192.168.0.192:3000';
-  useEffect(() => {
-    const fetchData = async () => {
-      await listarUsuarios();
-      await listarNegocios();
-      await listarMenus();
-      await listarComentarios();
+    useEffect(() => {  
+        listarUsuarios();  
+        listarNegocios();  
+        listarMenus();  
+        listarComentarios();  
+        listarPromociones();  
+        listarPuntosFidelidad();  
+    }, []);  
 
-    };
-    fetchData();
-  }, []);
-
-  // Funciones para listar datos  
-  const listarUsuarios = async () => {
-    try {
-      const resp = await fetch('http://localhost:3000/usuarios');
-      if (!resp.ok) throw new Error('Error al cargar usuarios');
-      const data = await resp.json();
-      setUsuarios(data);
-    } catch (error) {
-      console.error(error);
-      alert(error instanceof Error ? error.message : 'Ocurrió un error desconocido');
-    }
-  }
-
-  const listarNegocios = async () => {
-    try {
-      const resp = await fetch('http://localhost:3000/negocios');
-      if (!resp.ok) throw new Error('Error al cargar negocios');
-      const data = await resp.json();
-      setNegocios(data);
-    } catch (error) {
-      console.error(error);
-      alert(error instanceof Error ? error.message : 'Ocurrió un error desconocido');
-    }
-  }
-
-  const listarMenus = async () => {
-    try {
-      const resp = await fetch('http://localhost:3000/menus');
-      if (!resp.ok) throw new Error('Error al cargar menús');
-      const data = await resp.json();
-      setMenus(data);
-    } catch (error) {
-      console.error(error);
-      alert(error instanceof Error ? error.message : 'Ocurrió un error desconocido');
-    }
-  }
-
-  const listarComentarios = async () => {
-    try {
-      const resp = await fetch('http://localhost:3000/comentarios');
-      if (!resp.ok) throw new Error('Error al cargar comentarios');
-      const data = await resp.json();
-      setComentarios(data);
-    } catch (error) {
-      console.error(error);
-      alert(error instanceof Error ? error.message : 'Ocurrió un error desconocido');
-    }
-  }
-
-  /*const listarPromociones = async () => {  
-    try {  
-      const resp = await fetch('http://localhost:5000/promociones');  
-      if (!resp.ok) throw new Error('Error al cargar promociones');  
-      const data = await resp.json();  
-      setPromociones(data);  
-    } catch (error) {  
-      console.error(error);  
-      alert(error instanceof Error ? error.message : 'Ocurrió un error desconocido');
+    // Funciones para listar datos  
+    async function listarUsuarios() {  
+        const resp = await fetch('http://localhost:5000/usuarios');  
+        const data = await resp.json();  
+        setUsuarios(data);  
     }  
-  }   
 
-  const listarPuntosFidelidad = async () => {  
-    try {  
-      const resp = await fetch('http://localhost:5000/puntosFidelidad');  
-      if (!resp.ok) throw new Error('Error al cargar puntos de fidelidad');  
-      const data = await resp.json();  
-      setPuntosFidelidad(data);  
-    } catch (error) {  
-      console.error(error);  
-      alert(error instanceof Error ? error.message : 'Ocurrió un error desconocido');
-    }   
-  } */
+    async function listarNegocios() {  
+        const resp = await fetch('http://localhost:5000/negocios');  
+        const data = await resp.json();  
+        setNegocios(data);  
+    }  
 
-  // Funciones CRUD para usuarios (ejemplo)  
-  const agregarUsuario = async (usuario: Usuarios) => {
-    try {
-      const resp = await fetch('http://localhost:3000/usuarios', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(usuario),
-      });
-      if (!resp.ok) throw new Error('Error al agregar usuario');
-      await listarUsuarios();
-      alert('Usuario agregado correctamente');
-    } catch (error) {
-      console.error(error);
-      alert(error instanceof Error ? error.message : 'Ocurrió un error desconocido');
-    }
-  }
+    async function listarMenus() {  
+        const resp = await fetch('http://localhost:5000/menus');  
+        const data = await resp.json();  
+        setMenus(data);  
+    }  
 
-  const actualizarUsuario = async (usuario: Usuarios) => {
-    try {
-      const resp = await fetch(`http://localhost:3000/usuarios/${usuario.id_usuario}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(usuario),
-      });
-      if (!resp.ok) throw new Error('Error al actualizar usuario');
-      await listarUsuarios();
-      alert('Usuario actualizado correctamente');
-    } catch (error) {
-      console.error(error);
-      alert(error instanceof Error ? error.message : 'Ocurrió un error desconocido');
-    }
-  }
+    async function listarComentarios() {  
+        const resp = await fetch('http://localhost:5000/comentarios');  
+        const data = await resp.json();  
+        setComentarios(data);  
+    }  
 
-  const eliminarUsuario = async (id: number) => {
-    try {
-      const resp = await fetch(`http://localhost:3000/usuarios/${id}`, {
-        method: 'DELETE',
-      });
-      if (!resp.ok) throw new Error('Error al eliminar usuario');
-      await listarUsuarios();
-      alert('Usuario eliminado correctamente');
-    } catch (error) {
-      console.error(error);
-      alert(error instanceof Error ? error.message : 'Ocurrió un error desconocido');
-    }
-  }
+    async function listarPromociones() {  
+        const resp = await fetch('http://localhost:5000/promociones');  
+        const data = await resp.json();  
+        setPromociones(data);  
+    }  
 
-  return (
-    <SaboresContext.Provider
-      value={{
-        usuarios,
-        setUsuarios,
-        isLoggedIn,
-        setIsLoggedIn,
-        obtenerUsuarios: listarUsuarios, // Puedes usar listarUsuarios como obtenerUsuarios
-        negocios,
-        setNegocios,
-        menus,
-        setMenus,
-        comentarios,
-        setComentarios,
-        agregarUsuario,
-        actualizarUsuario,
-        eliminarUsuario,
-        agregarNegocio,
-        actualizarNegocio,
-        eliminarNegocio,
-        agregarMenu,
-        actualizarMenu,
-        eliminarMenu,
-        agregarComentario,
-        actualizarComentario,
-        eliminarComentario,
-      }}
-    >
-      {children}
-    </SaboresContext.Provider>
-  );
-};
+    async function listarPuntosFidelidad() {  
+        const resp = await fetch('http://localhost:5000/puntosFidelidad');  
+        const data = await resp.json();  
+        setPuntosFidelidad(data);  
+    }  
+
+    // Funciones para agregar, actualizar y eliminar  
+    async function agregarUsuario(usuario) {  
+        const resp = await fetch('http://localhost:5000/usuarios', {  
+            method: 'POST',  
+            headers: { 'Content-Type': 'application/json' },  
+            body: JSON.stringify(usuario),  
+        });  
+        if (resp.ok) {  
+            listarUsuarios(); // Actualiza la lista después de agregar  
+            alert('Usuario agregado correctamente');  
+        } else {  
+            alert('Ocurrió un error al agregar usuario');  
+        }  
+    }  
+
+    async function actualizarUsuario(usuario) {  
+        const resp = await fetch(`http://localhost:5000/usuarios/${usuario.id_usuario}`, {  
+            method: 'PUT',  
+            headers: { 'Content-Type': 'application/json' },  
+            body: JSON.stringify(usuario),  
+        });  
+        if (resp.ok) {  
+            listarUsuarios(); // Actualiza la lista después de actualizar  
+            alert('Usuario actualizado correctamente');  
+        } else {  
+            alert('Ocurrió un error al actualizar usuario');  
+        }  
+    }  
+
+    async function eliminarUsuario(id) {  
+        const resp = await fetch(`http://localhost:5000/usuarios/${id}`, {  
+            method: 'DELETE',  
+        });  
+        if (resp.ok) {  
+            listarUsuarios(); // Actualiza la lista después de eliminar  
+            alert('Usuario eliminado correctamente');  
+        } else {  
+            alert('Ocurrió un error al eliminar usuario');  
+        }  
+    }  
+
+    // Puedes agregar funciones similares para Negocios, Menus, Comentarios, Promociones y PuntosFidelidad  
+
+    return (  
+        <SaboresContext.Provider  
+            value={{  
+                usuarios,  
+                negocios,  
+                menus,  
+                comentarios,  
+                promociones,  
+                puntosFidelidad,  
+                agregarUsuario,  
+                actualizarUsuario,  
+                eliminarUsuario,  
+                // Agrega aquí las funciones de Negocios, Menus, Comentarios, etc.  
+            }}  
+        >  
+            {children}  
+        </SaboresContext.Provider>  
+    );  
+};  
+
+// Hook para usar el contexto  
+export const useSaboresContext = () => {  
+    return useContext(SaboresContext); // Asegúrate de devolver el contexto correcto  
+};  
+
+export default SaboresProvider;
+
